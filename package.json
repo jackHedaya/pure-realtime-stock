@@ -7,6 +7,12 @@
   "author": "Jack Hedaya <jackehedaya@gmail.com>",
   "license": "MIT",
   "private": false,
+  "keywords": [
+    "free",
+    "realtime-stock",
+    "data",
+    "yahoo-finance"
+  ],
   "files": [
     "index.js"
   ],
