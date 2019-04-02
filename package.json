@@ -1,5 +1,5 @@
 {
-  "name": "realtime-stock",
+  "name": "pure-realtime-stock",
   "version": "1.0.0",
   "description": "get real-time stock data for free in Node.js",
   "main": "index.js",
