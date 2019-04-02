@@ -7,6 +7,9 @@
   "author": "Jack Hedaya <jackehedaya@gmail.com>",
   "license": "MIT",
   "private": false,
+  "files": [
+    "index.js"
+  ],
   "dependencies": {
     "puppeteer": "^1.13.0"
   }
