@@ -50,6 +50,7 @@ class RealtimeStock extends EventEmitter {
    */
   async subscribe(stock) {
     this.subscriptions.push(stock);
+    this.emit("debug", `Subscribing to ${stock.toUpperCase()}.`);
 
     await this._run(stock);
   }
@@ -62,7 +63,10 @@ class RealtimeStock extends EventEmitter {
   async unsubscribe(stock) {
     const pageIndex = this.subscriptions.indexOf(stock);
 
-    if (pageIndex === -1) {
+    if (pageIndex !== -1) {
+      this.subscriptions.splice(pageIndex, 1);
+      this.emit("debug", `Unsubscribed from ${stock.toUpperCase()}.`);
+    } else {
       this.emit("debug", `${stock.toUpperCase()} is not a subscription.`);
       return;
     }
