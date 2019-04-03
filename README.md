@@ -32,11 +32,29 @@ realtime.subscribe("ROKU");
 ```
 
 #### .unsubscribe(stock : string)
+Unsubscribe from a stock's price movements.
 ```js
 
 realtime.unsubscribe("ROKU");
 
 // The realtime "priceMoved" event will stop outputting ROKU's price movements.
+```
+
+#### .getPrice(stock : string)
+Gets a stock price.
+```js
+
+realtime.getPrice("ROKU").then(price => console.log(`ROKU's current price is ${price}.`));
+```
+
+#### .close()
+Should be ran at the end of your program to close the connection with Yahoo Finance. **If `close` is not called, the program will not exit.**
+```js
+
+realtime.getPrice("ROKU").then(price => {
+ console.log(price);
+ realtime.close();
+});
 ```
 
 #### .on("priceMoved", callback( { stock : string, price : number } ) )
