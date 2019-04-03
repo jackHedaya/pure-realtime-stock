@@ -16,6 +16,8 @@ class RealtimeStock extends EventEmitter {
    * @param {string} stock a stock ticker
    */
   async _run(stock) {
+    const s = stock.toUpperCase();
+
     try {
       const browser = await this.browser;
 
@@ -40,7 +42,7 @@ class RealtimeStock extends EventEmitter {
       });
     } catch (e) {
       this.emit("logs", e);
-      this.emit("debug", `Getting ${stock.toUpperCase()} price failed. See 'logs' to get the error message`);
+      this.emit("debug", `Getting ${s} price failed. See 'logs' to get the error message`);
     }
   }
 
@@ -50,7 +52,7 @@ class RealtimeStock extends EventEmitter {
    */
   async subscribe(stock) {
     const s = stock.toUpperCase();
-    
+
     this.subscriptions.push(s);
     this.emit("debug", `Subscribing to ${s}.`);
 
@@ -80,6 +82,38 @@ class RealtimeStock extends EventEmitter {
     const pages = await browser.pages();
 
     await pages[pageIndex + 1].close();
+  }
+
+  /**
+   * get the current stock price
+   * @param {string} stock
+   */
+  async getPrice(stock) {
+    const s = stock.toUpperCase();
+
+    try {
+      const browser = await this.browser;
+
+      const page = await browser.newPage();
+
+      await page.goto(`https://finance.yahoo.com/quote/${stock}`);
+
+      const element = await page.$('span[data-reactid="34"]:nth-child(1)');
+      const handler = await element.getProperty("textContent");
+
+      const value = await handler.jsonValue();
+
+      await page.close();
+
+      return parseFloat(value.replace(/,/g, ""));
+    } catch (e) {
+      this.emit("logs", e);
+      this.emit("debug", `Getting ${s} price failed. See 'logs' to get the error message`);
+    }
+  }
+
+  async close() {
+    (await this.browser).close();
   }
 }
 
