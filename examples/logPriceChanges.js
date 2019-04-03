@@ -9,15 +9,11 @@ realtime.subscribe("NIO");
 realtime.subscribe("AMZN");
 realtime.subscribe("SQ");
 realtime.subscribe("AAPL");
-realtime.subscribe("LYFT");
-realtime.subscribe("HIBB");
-realtime.subscribe("TVIX");
-realtime.subscribe("CWH");
 
 setTimeout(function() {
   realtime.unsubscribe("AMZN");
 }, 2000);
 
 setTimeout(function() {
-  realtime.unsubscribe("ROKU");
+  realtime.unsubscribe("SQ");
 }, 6000);
