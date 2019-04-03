@@ -17,3 +17,7 @@ setTimeout(function() {
 setTimeout(function() {
   realtime.unsubscribe("SQ");
 }, 6000);
+
+setTimeout(function () {
+  realtime.close();
+}, 12000);
