@@ -96,16 +96,28 @@ class RealtimeStock extends EventEmitter {
 
       const page = await browser.newPage();
 
+      await page.setRequestInterception(true);
+
+      page.on("request", req => {
+        const skip = ["stylesheet", "font", "image", "script"];
+        const resourceType = req.resourceType();
+
+        if (skip.includes(resourceType)) {
+          this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} price.`);
+          req.abort();
+        } else {
+          req.continue();
+        }
+      });
+
       await page.goto(`https://finance.yahoo.com/quote/${stock}`);
 
-      const element = await page.$('span[data-reactid="34"]:nth-child(1)');
-      const handler = await element.getProperty("textContent");
-
-      const value = await handler.jsonValue();
-
-      await page.close();
-
-      return parseFloat(value.replace(/,/g, ""));
+      return await page.evaluate(() => {
+        return document
+          .querySelector("#quote-market-notice")
+          .parentElement.querySelector("span")
+          .textContent.replace(/,/g, "");
+      });
     } catch (e) {
       this.emit("logs", e);
       this.emit("debug", `Getting ${s} price failed. See 'logs' to get the error message`);
