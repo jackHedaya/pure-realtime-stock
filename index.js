@@ -112,6 +112,9 @@ class RealtimeStock extends EventEmitter {
     }
   }
 
+  /**
+   * closes the connection with Yahoo Finance. if not ran, the program will not exit
+   */
   async close() {
     (await this.browser).close();
   }
