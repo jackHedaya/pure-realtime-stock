@@ -1,4 +1,6 @@
 # pure-realtime-stock
+[![NPM Downloads](https://img.shields.io/npm/dt/pure-realtime-stock.svg?style=flat-square)](https://www.npmjs.com/package/pure-realtime-stock)
+
 get real-time stock data for free in Node.js
 
 #### How does it work?
