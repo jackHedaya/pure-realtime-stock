@@ -1,5 +1,6 @@
 # pure-realtime-stock
-[![NPM Downloads](https://img.shields.io/npm/dt/pure-realtime-stock.svg?style=flat-square)](https://www.npmjs.com/package/pure-realtime-stock)
+[![NPM Downloads](https://img.shields.io/npm/dt/pure-realtime-stock.svg?style=curved-square)](https://www.npmjs.com/package/pure-realtime-stock)
+[![NPM Version](https://badge.fury.io/js/pure-realtime-stock.svg)](https://badge.fury.io/js/pure-realtime-stock)
 
 get real-time stock data for free in Node.js
 
