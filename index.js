@@ -34,7 +34,8 @@ class RealtimeStock extends EventEmitter {
       });
 
       await page.evaluate(function() {
-        var target = document.querySelector('span[data-reactid="34"]:nth-child(1)');
+        var target = document.querySelector("#quote-market-notice").parentElement.querySelector("span");
+
         var observer = new MutationObserver(emitEvent);
         var config = { characterData: true, attributes: false, childList: false, subtree: true };
 
@@ -113,10 +114,12 @@ class RealtimeStock extends EventEmitter {
       await page.goto(`https://finance.yahoo.com/quote/${stock}`);
 
       return await page.evaluate(() => {
-        return document
-          .querySelector("#quote-market-notice")
-          .parentElement.querySelector("span")
-          .textContent.replace(/,/g, "");
+        return parseFloat(
+          document
+            .querySelector("#quote-market-notice")
+            .parentElement.querySelector("span")
+            .textContent.replace(/,/g, "")
+        );
       });
     } catch (e) {
       this.emit("logs", e);
