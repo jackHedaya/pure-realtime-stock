@@ -1,6 +1,8 @@
 const puppeteer = require("puppeteer");
 const EventEmitter = require("events").EventEmitter;
 
+const { scrapePrice, blockResources } = require("./helpers");
+
 class RealtimeStock extends EventEmitter {
   constructor() {
     super();
@@ -26,11 +28,9 @@ class RealtimeStock extends EventEmitter {
       await page.goto(`https://finance.yahoo.com/quote/${stock}`);
 
       await page.exposeFunction("emitEvent", async () => {
-        const element = await page.$('span[data-reactid="34"]:nth-child(1)');
-        const handler = await element.getProperty("textContent");
-        const value = await handler.jsonValue();
+        const price = await scrapePrice(page);
 
-        this.emit("priceMoved", { stock: stock, price: parseFloat(value.replace(/,/g, "")) });
+        this.emit("priceMoved", { stock: stock, price: price });
       });
 
       await page.evaluate(function() {
@@ -97,30 +97,13 @@ class RealtimeStock extends EventEmitter {
 
       const page = await browser.newPage();
 
-      await page.setRequestInterception(true);
-
-      page.on("request", req => {
-        const skip = ["stylesheet", "font", "image", "script"];
-        const resourceType = req.resourceType();
-
-        if (skip.includes(resourceType)) {
-          this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} price.`);
-          req.abort();
-        } else {
-          req.continue();
-        }
-      });
+      await blockResources(page, ["stylesheet", "font", "image", "script"], resourceType =>
+        this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} price.`)
+      );
 
       await page.goto(`https://finance.yahoo.com/quote/${stock}`);
 
-      return await page.evaluate(() => {
-        return parseFloat(
-          document
-            .querySelector("#quote-market-notice")
-            .parentElement.querySelector("span")
-            .textContent.replace(/,/g, "")
-        );
-      });
+      return scrapePrice(page);
     } catch (e) {
       this.emit("logs", e);
       this.emit("debug", `Getting ${s} price failed. See 'logs' to get the error message`);
