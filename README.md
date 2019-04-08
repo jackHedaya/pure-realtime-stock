@@ -50,6 +50,16 @@ Gets a stock price.
 realtime.getPrice("ROKU").then(price => console.log(`ROKU's current price is ${price}.`));
 ```
 
+#### .getInformation(stock: string)
+Gets a stock's information as found on a <a href="https://finance.yahoo.com/quote/ROKU">Yahoo Finance</a> page.
+```js
+
+realtime.getInformation("ROKU").then(info => {
+ console.log(info);
+ realtime.close();
+});
+```
+
 #### .close()
 Should be ran at the end of your program to close the connection with Yahoo Finance. **If `close` is not called, the program will not exit.**
 ```js
