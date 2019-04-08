@@ -14,7 +14,7 @@ exports.scrapePrice = page => {
 };
 
 /**
- * @param {import("puppeteer").Page} page the Chromium page to blcok resources
+ * @param {import("puppeteer").Page} page the Chromium page to block resources
  * @param {string[]} skip the resource types to skip
  * @param {function(string) : void} callback called when a resource is blocked, passes the blocked resource type
  */
