@@ -87,7 +87,7 @@ class RealtimeStock extends EventEmitter {
 
   /**
    * get the current stock price
-   * @param {string} stock
+   * @param {string} stock a stock ticker
    */
   async getPrice(stock) {
     const s = stock.toUpperCase();
@@ -97,16 +97,66 @@ class RealtimeStock extends EventEmitter {
 
       const page = await browser.newPage();
 
+      await page.goto(`https://finance.yahoo.com/quote/${stock}`);
+
       await blockResources(page, ["stylesheet", "font", "image", "script"], resourceType =>
         this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} price.`)
       );
 
-      await page.goto(`https://finance.yahoo.com/quote/${stock}`);
+      const price = await scrapePrice(page);
 
-      return scrapePrice(page);
+      await page.close();
+
+      return price;
     } catch (e) {
       this.emit("logs", e);
       this.emit("debug", `Getting ${s} price failed. See 'logs' to get the error message`);
+    }
+  }
+
+  /**
+   *
+   * @param {string} stock a stock ticker
+   */
+  async getInformation(stock) {
+    const s = stock.toUpperCase();
+
+    try {
+      const browser = await this.browser;
+
+      const page = await browser.newPage();
+
+      await page.goto(`https://finance.yahoo.com/quote/${stock}`);
+
+      await blockResources(page, ["stylesheet", "font", "image", "script"], resourceType =>
+        this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} information.`)
+      );
+
+      const info = await page.evaluate(() => {
+        const r = {};
+
+        const tables = Array.from(document.querySelectorAll("tbody")).splice(0, 2);
+
+        tables.forEach(table => {
+
+          Array.from(table.children).forEach(child => {
+            /** @type {string} */
+            const val = child.children[1].innerText.trim().replace(/,/g, "");
+            const parsed = val.includes("x") ? NaN : parseFloat(val);
+
+            r[`${child.children[0].innerText.trim()}`] = isNaN(parsed) ? val : parsed;
+          });
+        });
+
+        return r;
+      });
+
+      await page.close();
+
+      return info;
+    } catch (e) {
+      this.emit("logs", e);
+      this.emit("debug", `Getting ${s} stock information failed. See 'logs' to get the error message`);
     }
   }
 
