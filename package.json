@@ -1,6 +1,6 @@
 {
   "name": "pure-realtime-stock",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "get real-time stock data for free in Node.js",
   "main": "index.js",
   "repository": "https://github.com/jackHedaya/node-realtime-stock",
