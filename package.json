@@ -14,7 +14,8 @@
     "yahoo-finance"
   ],
   "files": [
-    "index.js"
+    "index.js",
+    "helpers.js"
   ],
   "dependencies": {
     "puppeteer": "^1.13.0"
