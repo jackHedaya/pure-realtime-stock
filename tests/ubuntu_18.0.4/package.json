@@ -1,0 +1,15 @@
+{
+  "name": "ubuntu_18.0.4",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pure-realtime-stock": "^1.0.4"
+  }
+}
