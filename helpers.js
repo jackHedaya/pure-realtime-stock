@@ -33,3 +33,5 @@ exports.blockResources = async (page, skip, callback) => {
     }
   });
 };
+
+exports.isLinux = () => process.platform === "linux";

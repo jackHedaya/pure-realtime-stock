@@ -1,13 +1,13 @@
 const puppeteer = require("puppeteer");
 const EventEmitter = require("events").EventEmitter;
 
-const { scrapePrice, blockResources } = require("./helpers");
+const { scrapePrice, blockResources, isLinux } = require("./helpers");
 
 class RealtimeStock extends EventEmitter {
   constructor() {
     super();
 
-    if (!this.browser) this.browser = puppeteer.launch({ headless: true });
+    if (!this.browser) this.browser = puppeteer.launch({ headless: true, args: isLinux() ? ["--no-sandbox"] : undefined });
 
     this.subscriptions = [];
   }
@@ -138,7 +138,6 @@ class RealtimeStock extends EventEmitter {
         const tables = Array.from(document.querySelectorAll("tbody")).splice(0, 2);
 
         tables.forEach(table => {
-
           Array.from(table.children).forEach(child => {
             /** @type {string} */
             const val = child.children[1].innerText.trim().replace(/,/g, "");
