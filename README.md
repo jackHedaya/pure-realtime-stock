@@ -15,6 +15,8 @@ Using npm:
 Using yarn:
 + `yarn add pure-realtime-stock`
 
+**On Ubuntu use `--unsafe-perm=true`. Then follow dependency installation directions**.
+
 ## Usage
 
 #### RealtimeStock()
