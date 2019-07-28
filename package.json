@@ -1,6 +1,6 @@
 {
   "name": "pure-realtime-stock",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "get real-time stock data for free in Node.js",
   "main": "index.js",
   "repository": "https://github.com/jackHedaya/node-realtime-stock",
@@ -19,8 +19,8 @@
   "files": [
     "index.js",
     "helpers.js",
-    “deps.sh”,
-    “preinstall.js”
+    "deps.sh",
+    "preinstall.js"
   ],
   "dependencies": {
     "chalk": "^2.4.2",
