@@ -103,6 +103,7 @@ class RealtimeStock extends EventEmitter {
         this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} price.`)
       );
 
+      await page.waitForSelector("#quote-market-notice")
       const price = await scrapePrice(page);
 
       await page.close();
