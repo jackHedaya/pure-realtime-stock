@@ -4,6 +4,9 @@
   "description": "get real-time stock data for free in Node.js",
   "main": "index.js",
   "repository": "https://github.com/jackHedaya/node-realtime-stock",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "author": "Jack Hedaya <jackehedaya@gmail.com>",
   "license": "MIT",
   "private": false,
