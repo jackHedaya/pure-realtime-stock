@@ -97,13 +97,13 @@ class RealtimeStock extends EventEmitter {
 
       const page = await browser.newPage();
 
-      await page.goto(`https://finance.yahoo.com/quote/${stock}`);
+      await page.goto(`https://robinhood.com/stocks/${stock}`);
 
       await blockResources(page, ["stylesheet", "font", "image", "script"], resourceType =>
         this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} price.`)
       );
 
-      await page.waitForSelector("#quote-market-notice")
+      await page.waitForSelector(".up,.down")
       const price = await scrapePrice(page);
 
       await page.close();

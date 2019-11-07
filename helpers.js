@@ -6,12 +6,12 @@ exports.scrapePrice = page => {
   return page.evaluate(() => {
     return parseFloat(
       document
-        .querySelector("#quote-market-notice")
-        .parentElement.querySelector("span")
-        .textContent.replace(/,/g, "")
-    );
-  });
-};
+        .querySelector('.up > div:first-child > div,.down > div:first-child > div')
+        .textContent.replace(/,/g, '')
+        .replace(/\$/g, '')
+    )
+  })
+}
 
 /**
  * @param {import("puppeteer").Page} page the Chromium page to block resources
@@ -19,19 +19,19 @@ exports.scrapePrice = page => {
  * @param {function(string) : void} callback called when a resource is blocked, passes the blocked resource type
  */
 exports.blockResources = async (page, skip, callback) => {
-  await page.setRequestInterception(true);
+  await page.setRequestInterception(true)
 
-  page.on("request", req => {
-    const resourceType = req.resourceType();
+  page.on('request', req => {
+    const resourceType = req.resourceType()
 
     if (skip.includes(resourceType)) {
-      callback(resourceType);
+      callback(resourceType)
 
-      req.abort();
+      req.abort()
     } else {
-      req.continue();
+      req.continue()
     }
-  });
-};
+  })
+}
 
-exports.isLinux = () => process.platform === "linux";
+exports.isLinux = () => process.platform === 'linux'
