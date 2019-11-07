@@ -1,15 +1,16 @@
-const puppeteer = require("puppeteer");
-const EventEmitter = require("events").EventEmitter;
+const puppeteer = require('puppeteer')
+const EventEmitter = require('events').EventEmitter
 
-const { scrapePrice, blockResources, isLinux } = require("./helpers");
+const { scrapePrice, blockResources, isLinux } = require('./helpers')
 
 class RealtimeStock extends EventEmitter {
   constructor() {
-    super();
+    super()
 
-    if (!this.browser) this.browser = puppeteer.launch({ headless: true, args: isLinux() ? ["--no-sandbox"] : undefined });
+    if (!this.browser)
+      this.browser = puppeteer.launch({ headless: false, args: isLinux() ? ['--no-sandbox'] : undefined })
 
-    this.subscriptions = [];
+    this.subscriptions = []
   }
 
   /**
@@ -18,32 +19,36 @@ class RealtimeStock extends EventEmitter {
    * @param {string} stock a stock ticker
    */
   async _run(stock) {
-    const s = stock.toUpperCase();
+    const s = stock.toUpperCase()
 
     try {
-      const browser = await this.browser;
+      const browser = await this.browser
 
-      const page = await browser.newPage();
+      const page = await browser.newPage()
 
-      await page.goto(`https://finance.yahoo.com/quote/${stock}`);
+      await page.goto(`https://robinhood.com/stocks/${stock}`)
 
-      await page.exposeFunction("emitEvent", async () => {
-        const price = await scrapePrice(page);
+      await blockResources(page, ['stylesheet', 'font', 'image'], resourceType =>
+        this.emit('debug', `Skipping resource of type '${resourceType}' while accessing ${s} information.`)
+      )
 
-        this.emit("priceMoved", { stock: stock, price: price });
-      });
+      await page.exposeFunction('emitEvent', async () => {
+        const price = await scrapePrice(page)
+
+        this.emit('priceMoved', { stock: stock, price: price })
+      })
 
       await page.evaluate(function() {
-        var target = document.querySelector("#quote-market-notice").parentElement.querySelector("span");
+        var target = document.querySelector('.up > div:first-child > div,.down > div:first-child > div')
 
-        var observer = new MutationObserver(emitEvent);
-        var config = { characterData: true, attributes: false, childList: false, subtree: true };
+        var observer = new MutationObserver(emitEvent)
+        var config = { characterData: true, attributes: false, childList: false, subtree: true }
 
-        observer.observe(target, config);
-      });
+        observer.observe(target, config)
+      })
     } catch (e) {
-      this.emit("logs", e);
-      this.emit("debug", `Getting ${s} price failed. See 'logs' to get the error message`);
+      this.emit('logs', e)
+      this.emit('debug', `Getting ${s} price failed. See 'logs' to get the error message`)
     }
   }
 
@@ -52,12 +57,12 @@ class RealtimeStock extends EventEmitter {
    * @param {string} stock a stock ticker
    */
   async subscribe(stock) {
-    const s = stock.toUpperCase();
+    const s = stock.toUpperCase()
 
-    this.subscriptions.push(s);
-    this.emit("debug", `Subscribing to ${s}.`);
+    this.subscriptions.push(s)
+    this.emit('debug', `Subscribing to ${s}.`)
 
-    await this._run(stock);
+    await this._run(stock)
   }
 
   /**
@@ -66,23 +71,23 @@ class RealtimeStock extends EventEmitter {
    * @param {string} stock a stock ticker
    */
   async unsubscribe(stock) {
-    const s = stock.toUpperCase();
+    const s = stock.toUpperCase()
 
-    const pageIndex = this.subscriptions.indexOf(s);
+    const pageIndex = this.subscriptions.indexOf(s)
 
     if (pageIndex !== -1) {
-      this.subscriptions.splice(pageIndex, 1);
-      this.emit("debug", `Unsubscribed from ${s}.`);
+      this.subscriptions.splice(pageIndex, 1)
+      this.emit('debug', `Unsubscribed from ${s}.`)
     } else {
-      this.emit("debug", `${s} is not a subscription.`);
-      return;
+      this.emit('debug', `${s} is not a subscription.`)
+      return
     }
 
-    const browser = await this.browser;
+    const browser = await this.browser
 
-    const pages = await browser.pages();
+    const pages = await browser.pages()
 
-    await pages[pageIndex + 1].close();
+    await pages[pageIndex + 1].close()
   }
 
   /**
@@ -90,28 +95,28 @@ class RealtimeStock extends EventEmitter {
    * @param {string} stock a stock ticker
    */
   async getPrice(stock) {
-    const s = stock.toUpperCase();
+    const s = stock.toUpperCase()
 
     try {
-      const browser = await this.browser;
+      const browser = await this.browser
 
-      const page = await browser.newPage();
+      const page = await browser.newPage()
 
-      await page.goto(`https://robinhood.com/stocks/${stock}`);
+      await page.goto(`https://robinhood.com/stocks/${stock}`)
 
-      await blockResources(page, ["stylesheet", "font", "image", "script"], resourceType =>
-        this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} price.`)
-      );
+      await blockResources(page, ['stylesheet', 'font', 'image', 'script'], resourceType =>
+        this.emit('debug', `Skipping resource of type '${resourceType}' while accessing ${s} price.`)
+      )
 
-      await page.waitForSelector(".up,.down")
-      const price = await scrapePrice(page);
+      await page.waitForSelector('.up,.down')
+      const price = await scrapePrice(page)
 
-      await page.close();
+      await page.close()
 
-      return price;
+      return price
     } catch (e) {
-      this.emit("logs", e);
-      this.emit("debug", `Getting ${s} price failed. See 'logs' to get the error message`);
+      this.emit('logs', e)
+      this.emit('debug', `Getting ${s} price failed. See 'logs' to get the error message`)
     }
   }
 
@@ -120,43 +125,43 @@ class RealtimeStock extends EventEmitter {
    * @param {string} stock a stock ticker
    */
   async getInformation(stock) {
-    const s = stock.toUpperCase();
+    const s = stock.toUpperCase()
 
     try {
-      const browser = await this.browser;
+      const browser = await this.browser
 
-      const page = await browser.newPage();
+      const page = await browser.newPage()
 
-      await page.goto(`https://finance.yahoo.com/quote/${stock}`);
+      await page.goto(`https://finance.yahoo.com/quote/${stock}`)
 
-      await blockResources(page, ["stylesheet", "font", "image", "script"], resourceType =>
-        this.emit("debug", `Skipping resource of type '${resourceType}' while accessing ${s} information.`)
-      );
+      await blockResources(page, ['stylesheet', 'font', 'image', 'script'], resourceType =>
+        this.emit('debug', `Skipping resource of type '${resourceType}' while accessing ${s} information.`)
+      )
 
       const info = await page.evaluate(() => {
-        const r = {};
+        const r = {}
 
-        const tables = Array.from(document.querySelectorAll("tbody")).splice(0, 2);
+        const tables = Array.from(document.querySelectorAll('tbody')).splice(0, 2)
 
         tables.forEach(table => {
           Array.from(table.children).forEach(child => {
             /** @type {string} */
-            const val = child.children[1].innerText.trim().replace(/,/g, "");
-            const parsed = val.includes("x") ? NaN : parseFloat(val);
+            const val = child.children[1].innerText.trim().replace(/,/g, '')
+            const parsed = val.includes('x') ? NaN : parseFloat(val)
 
-            r[`${child.children[0].innerText.trim()}`] = isNaN(parsed) ? val : parsed;
-          });
-        });
+            r[`${child.children[0].innerText.trim()}`] = isNaN(parsed) ? val : parsed
+          })
+        })
 
-        return r;
-      });
+        return r
+      })
 
-      await page.close();
+      await page.close()
 
-      return info;
+      return info
     } catch (e) {
-      this.emit("logs", e);
-      this.emit("debug", `Getting ${s} stock information failed. See 'logs' to get the error message`);
+      this.emit('logs', e)
+      this.emit('debug', `Getting ${s} stock information failed. See 'logs' to get the error message`)
     }
   }
 
@@ -164,8 +169,8 @@ class RealtimeStock extends EventEmitter {
    * closes the connection with Yahoo Finance. if not ran, the program will not exit
    */
   async close() {
-    (await this.browser).close();
+    ;(await this.browser).close()
   }
 }
 
-module.exports = RealtimeStock;
+module.exports = RealtimeStock
