@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": "https://github.com/jackHedaya/node-realtime-stock",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+    "registry": "https://registry.npmjs.org/"
   },
   "author": "Jack Hedaya <jackehedaya@gmail.com>",
   "license": "MIT",
