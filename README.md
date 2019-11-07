@@ -5,7 +5,7 @@
 get real-time stock data for free in Node.js
 
 #### How does it work?
-Hidden Yahoo Finance pages are opened programmatically for each stock. When the price of a stock changes in realtime, the price and symbol is sent over.
+Hidden Robinhood pages are opened programmatically for each stock. When the price of a stock changes in realtime, the price and symbol is sent over.
 
 ## Installation
 
@@ -53,7 +53,7 @@ realtime.getPrice("ROKU").then(price => console.log(`ROKU's current price is ${p
 ```
 
 #### .getInformation(stock: string)
-Gets a stock's information as found on a <a href="https://finance.yahoo.com/quote/ROKU">Yahoo Finance</a> page.
+Gets a stock's information as found on a <a href="https://robinhood.com/stocks/ROKU">Robinhood</a> page.
 ```js
 
 realtime.getInformation("ROKU").then(info => {
@@ -63,7 +63,7 @@ realtime.getInformation("ROKU").then(info => {
 ```
 
 #### .close()
-Should be ran at the end of your program to close the connection with Yahoo Finance. **If `close` is not called, the program will not exit.**
+Should be ran at the end of your program to close the connection with Robinhood. **If `close` is not called, the program will not exit.**
 ```js
 
 realtime.getPrice("ROKU").then(price => {
