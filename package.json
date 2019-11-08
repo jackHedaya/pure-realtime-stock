@@ -23,7 +23,7 @@
     "index.js",
     "helpers.js",
     "deps.sh",
-    "preinstall.js"
+    "postinstall.js"
   ],
   "dependencies": {
     "chalk": "^2.4.2",
