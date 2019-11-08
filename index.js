@@ -8,7 +8,7 @@ class RealtimeStock extends EventEmitter {
     super()
 
     if (!this.browser)
-      this.browser = puppeteer.launch({ headless: false, args: isLinux() ? ['--no-sandbox'] : undefined })
+      this.browser = puppeteer.launch({ headless: true, args: isLinux() ? ['--no-sandbox'] : undefined })
 
     this.subscriptions = []
   }
@@ -132,28 +132,18 @@ class RealtimeStock extends EventEmitter {
 
       const page = await browser.newPage()
 
-      await page.goto(`https://finance.yahoo.com/quote/${stock}`)
+      await page.goto(`https://robinhood.com/stocks/${stock}`)
 
       await blockResources(page, ['stylesheet', 'font', 'image', 'script'], resourceType =>
         this.emit('debug', `Skipping resource of type '${resourceType}' while accessing ${s} information.`)
       )
 
       const info = await page.evaluate(() => {
-        const r = {}
-
-        const tables = Array.from(document.querySelectorAll('tbody')).splice(0, 2)
-
-        tables.forEach(table => {
-          Array.from(table.children).forEach(child => {
-            /** @type {string} */
-            const val = child.children[1].innerText.trim().replace(/,/g, '')
-            const parsed = val.includes('x') ? NaN : parseFloat(val)
-
-            r[`${child.children[0].innerText.trim()}`] = isNaN(parsed) ? val : parsed
-          })
-        })
-
-        return r
+        return [...document.querySelectorAll('.grid-4 ._3NzV9cihCJfQKoeSaerZiq')].reduce((acc, outer) => {
+          const [e1, e2] = outer.childNodes
+          const x = Object.assign({}, acc, { [e1.textContent]: e2.textContent })
+          return x
+        }, {})
       })
 
       await page.close()
