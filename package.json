@@ -11,7 +11,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "preinstall": "node ./preinstall.js"
+    "postinstall": "node ./postinstall.js"
   },
   "keywords": [
     "free",
