@@ -9,13 +9,19 @@ Hidden Robinhood pages are opened programmatically for each stock. When the pric
 
 ## Installation
 
+**Regular**
+
 Using npm:
 + `npm install pure-realtime-stock`
 
 Using yarn:
 + `yarn add pure-realtime-stock`
 
-**On Ubuntu use `--unsafe-perm=true`. Then follow dependency installation directions**.
+**Ubuntu**
+
++ Run installation as root and add `--unsafe-perm=true` flag
++ Install Puppeteer dependencies using `sh node_modules/pure-realtime-stock/deps.sh`
+
 
 ## Usage
 
